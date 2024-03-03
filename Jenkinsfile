@@ -1,27 +1,16 @@
 pipeline {
-    agent {
-        docker {
-            image 'terraform-image'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket if needed
-        }
-    }
+    agent any
     
     stages {
-        stage('Terraform Init') {
+        stage('Terraform') {
             steps {
-                sh 'terraform init'
-            }
-        }
-        
-        stage('Terraform Plan') {
-            steps {
-                sh 'terraform plan'
-            }
-        }
-        
-        stage('Terraform Apply') {
-            steps {
-                sh 'terraform apply -auto-approve'
+                script {
+                    docker.image('terraform-image').inside {
+                        sh 'terraform init'
+                        sh 'terraform plan'
+                        sh 'terraform apply -auto-approve'
+                    }
+                }
             }
         }
     }
