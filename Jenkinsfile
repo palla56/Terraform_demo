@@ -4,15 +4,15 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/palla56/Terraform_demo.git'
+                git branch: 'main', url: 'https://your-git-repository-url.git'
             }
         }
         
         stage('Terraform Init') {
             steps {
                 script {
-                    // Run Terraform commands inside a Docker container using the Docker Pipeline Plugin
-                    docker.image('terraform-image').inside {
+                    // Run Terraform commands inside a Docker container using the withDockerContainer step
+                    withDockerContainer(image: 'terraform-image', args: '-v ${WORKSPACE}:/workspace') {
                         sh 'terraform init'
                     }
                 }
@@ -22,8 +22,8 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    // Run Terraform commands inside a Docker container using the Docker Pipeline Plugin
-                    docker.image('terraform-image').inside {
+                    // Run Terraform commands inside a Docker container using the withDockerContainer step
+                    withDockerContainer(image: 'terraform-image', args: '-v ${WORKSPACE}:/workspace') {
                         sh 'terraform plan'
                     }
                 }
@@ -33,8 +33,8 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    // Run Terraform commands inside a Docker container using the Docker Pipeline Plugin
-                    docker.image('terraform-image').inside {
+                    // Run Terraform commands inside a Docker container using the withDockerContainer step
+                    withDockerContainer(image: 'terraform-image', args: '-v ${WORKSPACE}:/workspace') {
                         sh 'terraform apply -auto-approve'
                     }
                 }
