@@ -11,8 +11,8 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 script {
-                    // Run Terraform commands inside a Docker container
-                    sh 'docker run -v ${WORKSPACE}:/workspace terraform-image terraform init'
+                    // Run Terraform commands inside a Docker container with Docker-in-Docker (DIND)
+                    sh 'docker run --rm --privileged -v ${WORKSPACE}:/workspace -v /var/run/docker.sock:/var/run/docker.sock -e "DOCKER_HOST=unix:///var/run/docker.sock" terraform-image terraform init'
                 }
             }
         }
@@ -20,8 +20,8 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    // Run Terraform commands inside a Docker container
-                    sh 'docker run -v ${WORKSPACE}:/workspace terraform-image terraform plan'
+                    // Run Terraform commands inside a Docker container with Docker-in-Docker (DIND)
+                    sh 'docker run --rm --privileged -v ${WORKSPACE}:/workspace -v /var/run/docker.sock:/var/run/docker.sock -e "DOCKER_HOST=unix:///var/run/docker.sock" terraform-image terraform plan'
                 }
             }
         }
@@ -29,8 +29,8 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    // Run Terraform commands inside a Docker container
-                    sh 'docker run -v ${WORKSPACE}:/workspace terraform-image terraform apply -auto-approve'
+                    // Run Terraform commands inside a Docker container with Docker-in-Docker (DIND)
+                    sh 'docker run --rm --privileged -v ${WORKSPACE}:/workspace -v /var/run/docker.sock:/var/run/docker.sock -e "DOCKER_HOST=unix:///var/run/docker.sock" terraform-image terraform apply -auto-approve'
                 }
             }
         }
